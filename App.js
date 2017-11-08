@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { FlatList, Text, StyleSheet,View,TextInput,Image,Button,ScrollView,TouchableHighlight } from 'react-native'
+import { FlatList, Text, StyleSheet,View,TextInput,Image,Button,ScrollView,TouchableHighlight,Input } from 'react-native'
 import { Avatar } from 'react-native-elements';
 import {DrawerNavigator,TabNavigator,StackNavigator} from 'react-navigation';
 
@@ -10,39 +10,36 @@ import {DrawerNavigator,TabNavigator,StackNavigator} from 'react-navigation';
     backgroundColor:'gold',
     header:null};
 
-    constructor(props){
-      super(props);
-      this.state = {
-        title : "",
-        titleStore : [],
-        completed : []
-      };
-    }
-  handleChange = (text)=>{
-    this.setState({title:text})}
+  constructor(props){
+    super(props);
+    this.state = {
+      titleStore : [],
+      completed : []
+    };
+  }
 
-  onSubmitEdit = (title,props) => {
+  onSubmitEdit = (title) => {
+
     let array = this.state.titleStore
-    if (this.state.title.length>0){
+    if (title.length>0){
       array.push(this.state.title)
     }
     this.setState({titleStore:array})
-    this.setState({title:""});
+    
   }
   render(){
     const { navigate } = this.props.navigation;
     var titleInputComponents = this.state.titleStore.map((type) => {return(<Text>{type}</Text>)})
+    console.log(this.state.title);
+    
     return (
       <View style={{flex:1}}>
         <View style={{flexDirection:'row',alignItems:"flex-end",justifyContent:'flex-start',height:80,backgroundColor:'gold'}}>
           <Text style = {{color:'white',fontSize:20,paddingLeft:10,paddingBottom:10,fontFamily:'monospace'}}>Tasks</Text>
         </View>
         <ScrollView>
-          {/* <Button
-              title="Go to Setup Tab"
-              onPress={() => navigate('Complete')}
-          /> */}
           {titleInputComponents}
+          <AddScreen maneesh={this.onSubmitEdit}/>
           <Text style ={{fontSize:20}}>HA</Text>
         </ScrollView>
         <View style={{alignItems:'flex-end',position:'absolute',top:500,right:250,left:350}}>
@@ -65,8 +62,23 @@ class AddScreen extends React.Component {
   static navigationOptions = {
     header: null
   };
+
+  state ={ title:''}
+
+  handleChange = (text)=>{
+    this.setState({title:text})}
+  
+  onSubmitting = () =>{
+    const{maneesh}=this.props
+    const{title}=this.state
+
+    maneesh(title)
+    this.setState({title:''})
+  }
+  
+
   render() {
-    const { navigate } = this.props.navigation;
+   
     return (
       <View style={{flex:1}}>
         <View style={{flexDirection:'row',alignItems:"flex-end",justifyContent:'flex-start',height:80,backgroundColor:'gold'}}>
@@ -76,15 +88,15 @@ class AddScreen extends React.Component {
           <TextInput
             style={{height: 40}}
             placeholder="New to-do"
-            /* value={this.state.title} */
+            value={this.state.title} 
             onChangeText={this.handleChange}/>
 		    </View>
         <View style={{alignItems:'center',paddingTop:20}}>
-          <TouchableHighlight onPress={this.props.onSubmitEdit} underlayColor='black'>
+          <TouchableHighlight onPress={this.onSubmitting} underlayColor='black'>
             <View style={{alignItems:'center', width:80,height:40,backgroundColor:'#2196F3'}}>
             <Text style={{color:'white',paddingTop:10}}>Add</Text>
             </View>
-            {/* onPress={() => navigate('ds')} */}
+         
           </TouchableHighlight>
         </View>
       </View>
